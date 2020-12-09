@@ -1,6 +1,6 @@
 FROM node:12 AS base
 WORKDIR /app
-COPY package*.json .
+COPY package*.json ./
 RUN npm ci --only=production
 
 FROM node:12-alpine
