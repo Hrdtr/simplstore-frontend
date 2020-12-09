@@ -64,6 +64,7 @@
           v-model="carousel.productCode"
           class="border appearance-none bg-gray-100 rounded w-full py-2 px-3 focus:outline-none"
           required
+          disabled
         >
           <option v-for="(c, i) in products" :key="i" :value="c.code">
             {{ c.code }}: {{ c.name }}
