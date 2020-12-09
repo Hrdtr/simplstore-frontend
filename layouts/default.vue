@@ -1,5 +1,28 @@
 <template>
   <div>
+    <Modal
+      v-show="showHelp"
+      :title="$store.state.help.title"
+      @close="showHelp = false"
+    >
+      <div class="h-64 overflow-y-auto border-b-2 border-gray-200">
+        <p
+          v-for="(h, i) in $store.state.help.content.split('\n')"
+          :key="i"
+          class="mb-3 last:mb-0"
+        >
+          {{ h }}
+        </p>
+      </div>
+      <div slot="footer" class="w-full flex items-center justify-end">
+        <button
+          class="focus:outline-none p-2 px-6 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 transition-colors duration-200"
+          @click="showHelp = false"
+        >
+          Close
+        </button>
+      </div>
+    </Modal>
     <nav
       id="header"
       class="w-full z-20 sticky top-0 bg-white bg-opacity-75"
@@ -58,7 +81,16 @@
             class="flex items-center tracking-wide no-underline hover:no-underline font-bold text-gray-800 text-xl pr-1 md:pr-24"
             to="/"
           >
+            <img
+              v-if="$store.state.sitePreference.data.icon"
+              class="w-6 h-6 mr-2"
+              :src="`${
+                $store.state.env.apiUrl || 'http://localhost:4000'
+              }/img/${$store.state.sitePreference.data.icon}`"
+              :alt="`${$store.state.store.data.name} icon`"
+            />
             <svg
+              v-else
               class="fill-current text-gray-800 mr-2"
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -75,7 +107,7 @@
         </div>
 
         <div id="nav-content" class="order-2 md:order-3 flex items-center">
-          <nuxt-link to="/" class="-mr-1">
+          <button class="-mr-1 focus:outline-none" @click="showHelp = true">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -116,7 +148,7 @@
                 fill="#626262"
               />
             </svg>
-          </nuxt-link>
+          </button>
           <!-- Account and Cart Icon -->
           <!-- <a class="inline-block no-underline hover:text-black" href="#">
             <svg
@@ -173,10 +205,10 @@
             </div>
           </div>
           <div class="flex w-full md:w-1/2 md:justify-end md:text-right">
-            <div class="">
+            <div>
               <h3 class="font-bold text-gray-900">Social</h3>
               <ul class="list-reset items-center pt-3">
-                <li v-for="(s, i) in socmed" :key="i">
+                <li v-for="(s, i) in $store.state.socmed.data" :key="i">
                   <a
                     class="inline-block no-underline hover:text-black hover:underline py-1"
                     :href="s.url"
@@ -197,6 +229,7 @@
 export default {
   data() {
     return {
+      showHelp: false,
       socmed: [
         {
           name: 'Instagram',
@@ -212,7 +245,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .page-enter-active,
 .page-leave-active {
   transition: opacity 0.5s;

@@ -15,48 +15,191 @@
             </span>
 
             <div id="store-nav-content" class="flex items-center">
-              <a
-                class="pl-3 inline-block no-underline hover:text-black"
-                href="#"
-              >
-                <svg
-                  class="fill-current hover:text-black"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+              <div>
+                <select
+                  ref="selectSort"
+                  class="bg-white h-10 rounded-md focus:outline-none appearance-none"
+                  type="select"
+                  name="select"
+                  @change="categorySelected($event.target.value)"
                 >
-                  <path d="M7 11H17V13H7zM4 7H20V9H4zM10 15H14V17H10z" />
-                </svg>
-              </a>
-
-              <a
-                class="pl-3 inline-block no-underline hover:text-black"
-                href="#"
-              >
-                <svg
-                  class="fill-current hover:text-black"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
+                  <option
+                    value="null"
+                    :selected="
+                      stateInfo === 'All Products' ||
+                      stateInfo.includes('Search')
+                    "
+                  >
+                    Category
+                  </option>
+                  <option
+                    v-for="(c, i) in productCategories"
+                    :key="i"
+                    :value="c"
+                  >
+                    {{ c }}
+                  </option>
+                </select>
+              </div>
+              <div class="relative m-auto">
+                <button
+                  class="pl-3 hover:text-black focus:outline-none mt-2"
+                  @click="showSortOptions = !showSortOptions"
                 >
-                  <path
-                    d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z"
-                  />
-                </svg>
-              </a>
+                  <svg
+                    class="fill-current hover:text-black"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M7 11H17V13H7zM4 7H20V9H4zM10 15H14V17H10z" />
+                  </svg>
+                </button>
+                <div class="absolute right-0 mt-0 z-10">
+                  <transition name="page">
+                    <form
+                      v-if="showSortOptions"
+                      class="relative mx-auto text-gray-800"
+                    >
+                      <select
+                        ref="selectSort"
+                        class="border border-gray-800 bg-white h-10 px-5 rounded-md focus:outline-none"
+                        type="select"
+                        name="select"
+                        @change="sortOptionSelected($event.target.value)"
+                      >
+                        <option value="null" :selected="activeSort === 'null'">
+                          Sort
+                        </option>
+                        <option
+                          value="name,asc"
+                          :selected="activeSort === 'name,asc'"
+                        >
+                          Name: A-Z
+                        </option>
+                        <option
+                          value="name,desc"
+                          :selected="activeSort === 'name,desc'"
+                        >
+                          Name: Z-A
+                        </option>
+                        <option
+                          value="price,asc"
+                          :selected="activeSort === 'price,asc'"
+                        >
+                          Price: Low-High
+                        </option>
+                        <option
+                          value="price,desc"
+                          :selected="activeSort === 'price,desc'"
+                        >
+                          Price: High-Low
+                        </option>
+                      </select>
+                    </form>
+                  </transition>
+                </div>
+              </div>
+              <div class="relative m-auto">
+                <button
+                  class="pl-3 hover:text-black focus:outline-none mt-2"
+                  @click="showSearchInput = !showSearchInput"
+                >
+                  <svg
+                    class="fill-current hover:text-black"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      d="M10,18c1.846,0,3.543-0.635,4.897-1.688l4.396,4.396l1.414-1.414l-4.396-4.396C17.365,13.543,18,11.846,18,10 c0-4.411-3.589-8-8-8s-8,3.589-8,8S5.589,18,10,18z M10,4c3.309,0,6,2.691,6,6s-2.691,6-6,6s-6-2.691-6-6S6.691,4,10,4z"
+                    />
+                  </svg>
+                </button>
+                <div class="absolute right-0 mt-0 z-10">
+                  <transition name="page">
+                    <form
+                      v-if="showSearchInput"
+                      class="relative mx-auto text-gray-800"
+                      @submit.prevent="search()"
+                    >
+                      <input
+                        ref="searchInput"
+                        v-model="searchKeyword"
+                        class="border border-gray-800 bg-white h-10 px-5 pr-10 rounded-md focus:outline-none"
+                        type="search"
+                        name="search"
+                        placeholder="Search code or name"
+                        required
+                      />
+                      <button
+                        type="submit"
+                        class="absolute right-0 top-0 mt-3 mr-4 focus:outline-none"
+                      >
+                        <svg
+                          id="Capa_1"
+                          class="text-gray-600 h-4 w-4 fill-current"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          version="1.1"
+                          x="0px"
+                          y="0px"
+                          viewBox="0 0 56.966 56.966"
+                          style="enable-background: new 0 0 56.966 56.966"
+                          xml:space="preserve"
+                          width="512px"
+                          height="512px"
+                        >
+                          <path
+                            d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z"
+                          />
+                        </svg>
+                      </button>
+                    </form>
+                  </transition>
+                </div>
+              </div>
             </div>
           </div>
         </nav>
 
+        <span class="w-full px-6 text-gray-700 font-semibold">
+          {{ stateInfo }}
+          <span
+            v-if="stateInfo.includes('Sort')"
+            class="text-sm font-light cursor-pointer ml-2 px-2 py-1 bg-gray-200 rounded-full"
+            @click="clearFilter"
+          >
+            clear
+          </span>
+        </span>
+        <div
+          v-if="products.length === 0"
+          class="w-full p-6 flex flex-col items-center justify-center text-gray-800"
+        >
+          Product not found
+        </div>
+
         <div
           v-for="(p, i) in products"
+          v-else
           :key="i"
           class="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 p-6 flex flex-col items-center"
         >
-          <NuxtLink :to="`/product/${p.code}`">
-            <img class="hover:grow hover:shadow-lg" :src="p.photos[0]" />
+          <NuxtLink :to="`/product/${p.code}`" class="w-full h-auto">
+            <div
+              class="relative w-full bg-gray-100 hover:shadow-lg transition-all duration-200"
+              style="padding-bottom: 100%"
+            >
+              <img
+                class="absolute top-0 w-full h-full object-cover"
+                :src="`${
+                  $store.state.env.apiUrl || 'http://localhost:4000'
+                }/img/${p.photos[0]}`"
+              />
+            </div>
             <div class="pt-3 flex items-center justify-between">
               <p class="">{{ p.name }}</p>
               <!-- Love Icon -->
@@ -70,7 +213,7 @@
                 />
               </svg> -->
             </div>
-            <p class="pt-1 text-gray-900">{{ p.price }}</p>
+            <p class="pt-1 text-gray-900">{{ p.price | currency }}</p>
           </NuxtLink>
         </div>
       </div>
@@ -82,14 +225,136 @@
 
 <script>
 export default {
+  filters: {
+    currency: (value) => {
+      if (!value) return ''
+      value = value.toString()
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+      }).format(value)
+    },
+  },
   async asyncData({ store, $axios }) {
     try {
-      const products = await $axios.get('http://localhost:4000/product')
+      const products = await $axios.get(
+        `${store.state.env.apiUrl || 'http://localhost:4000'}/product`
+      )
       return {
+        productsRaw: products.data,
         products: products.data,
       }
     } catch (error) {
       console.log(error)
+    }
+  },
+  data() {
+    return {
+      stateInfo: 'All Products',
+      showCategoryOptions: false,
+      showSortOptions: false,
+      activeSort: 'null',
+      showSearchInput: false,
+      searchKeyword: '',
+    }
+  },
+  computed: {
+    productCategories() {
+      const map = this.productsRaw.map((c) => {
+        return c.category
+      })
+      return [...new Set(map)]
+    },
+  },
+  methods: {
+    clearFilter() {
+      this.products = this.productsRaw
+      this.stateInfo = 'All Products'
+    },
+    async search() {
+      const filter = await this.productsRaw.filter(
+        (p) =>
+          p.code.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
+          p.name.toLowerCase().includes(this.searchKeyword.toLowerCase()) ||
+          p.description.toLowerCase().includes(this.searchKeyword.toLowerCase())
+      )
+      this.products = filter
+      this.showSearchInput = false
+      this.stateInfo = `Search: "${this.searchKeyword}"`
+      this.activeSort = 'null'
+    },
+    async categorySelected(e) {
+      if (e === 'null') {
+        this.products = this.productsRaw
+        this.showCategoryOptions = false
+        this.stateInfo = `All Products`
+        this.activeSort = 'null'
+      } else {
+        const filter = await this.productsRaw.filter(
+          (p) => p.category.toLowerCase() === e.toLowerCase()
+        )
+        this.products = filter
+        this.showCategoryOptions = false
+        this.stateInfo = `Category: ${e}`
+        this.activeSort = 'null'
+      }
+    },
+    async sortOptionSelected(e) {
+      if (e === 'null') {
+        this.showSortOptions = false
+        this.stateInfo = `${this.stateInfo.split('&')[0]}`
+        this.activeSort = 'null'
+      } else {
+        const keyOrder = e.split(',')
+        const sorted = await this.products.sort(
+          this.compareValues(keyOrder[0], keyOrder[1])
+        )
+        this.products = sorted
+        this.showSortOptions = false
+        this.activeSort = e
+        this.stateInfo = this.stateInfo.includes('Search')
+          ? `${this.stateInfo.split('&')[0]} & Sort: ${keyOrder[0]}, ${
+              keyOrder[1]
+            }`
+          : (this.stateInfo = this.stateInfo.includes('Category')
+              ? `${this.stateInfo.split('&')[0]} & Sort: ${keyOrder[0]}, ${
+                  keyOrder[1]
+                }`
+              : `Sort: ${keyOrder[0]}, ${keyOrder[1]}`)
+      }
+    },
+    compareValues(key, order = 'asc') {
+      return function innerSort(a, b) {
+        if (
+          !Object.prototype.hasOwnProperty.call(a, key) ||
+          !Object.prototype.hasOwnProperty.call(b, key)
+        ) {
+          return 0
+        }
+
+        const varA = typeof a[key] === 'string' ? a[key].toUpperCase() : a[key]
+        const varB = typeof b[key] === 'string' ? b[key].toUpperCase() : b[key]
+
+        let comparison = 0
+        if (varA > varB) {
+          comparison = 1
+        } else if (varA < varB) {
+          comparison = -1
+        }
+        return order === 'desc' ? comparison * -1 : comparison
+      }
+    },
+  },
+  head() {
+    return {
+      title: this.$store.state.sitePreference.data.title,
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: this.$store.state.sitePreference.data.icon,
+        },
+      ],
     }
   },
 }

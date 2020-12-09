@@ -3,7 +3,12 @@
     <ClientOnly>
       <Splide v-if="items.length !== 0" :options="options">
         <SplideSlide v-for="(item, i) in items" :key="i">
-          <img :src="item.img" class="hidden" />
+          <img
+            :src="`${$store.state.env.apiUrl || 'http://localhost:4000'}/img/${
+              item.img
+            }`"
+            class="hidden"
+          />
           <div class="container mx-auto h-full flex items-center">
             <div
               class="flex flex-col w-full lg:w-1/2 md:ml-16 items-center md:items-start px-6 tracking-wide"
@@ -52,7 +57,7 @@ export default {
   async mounted() {
     try {
       const carousels = await this.$axios.get(
-        `${this.$store.state.env.apiUrl}/carousel`
+        `${this.$store.state.env.apiUrl || 'http://localhost:4000'}/carousel`
       )
       this.items = carousels.data
     } catch (error) {

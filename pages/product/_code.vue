@@ -231,7 +231,9 @@ export default {
   async asyncData({ store, route, $axios }) {
     try {
       const product = await $axios.get(
-        `http://localhost:4000/product/${route.params.code}`
+        `${store.state.env.apiUrl || 'http://localhost:4000'}/product/${
+          route.params.code
+        }`
       )
       return {
         product: product.data,
@@ -243,8 +245,17 @@ export default {
   data() {
     return {}
   },
-  beforeDestroy() {
-    this.product = {}
+  head() {
+    return {
+      title: `${this.product.name} - ${this.$store.state.sitePreference.data.title}`,
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: this.$store.state.sitePreference.data.icon,
+        },
+      ],
+    }
   },
 }
 </script>
