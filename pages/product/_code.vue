@@ -188,7 +188,7 @@
               {{ product.price | currency }}
             </span>
             <a
-              :href="`https://api.whatsapp.com/send?phone=62243235235&text=Hai%2C%20Saya%20ingin%20memesan%20produk%20dengan%20kode%20${product.code}%20(${product.name}).`"
+              :href="`https://api.whatsapp.com/send?phone=${$store.state.store.data.whatsapp}&text=Hai%2C%20Saya%20ingin%20memesan%20produk%20dengan%20kode%20${product.code}%20(${product.name}).`"
               target="_blank"
               class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded"
             >
